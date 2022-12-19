@@ -12,10 +12,10 @@ Idea is inspired on @fabian-lauer and @trixing project linked below, many thanks
 - 3-Phase installation
 - Venus OS on Raspberry PI 4 4GB version 1.1 - Firmware v2.84
   - No other devices from Victron connected
-  - Connected to Wifi netowrk "A"
+  - Connected to Wifi network "A"
 - go-eCharger hardware version 2
   - Make sure in your go-eCharger app that api v1 is activated
-  - Connected to Wifi netowrk "A" with a known IP
+  - Connected to Wifi network "A" with a known IP
 
 ### Details / Process
 What is the script doing:
