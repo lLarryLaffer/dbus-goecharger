@@ -88,7 +88,7 @@ class DbusGoeChargerService:
     self._chargingTime = 0.0
 
     # add _update function 'timer'
-    gobject.timeout_add(250, self._update) # pause 250ms before the next request
+    gobject.timeout_add(5000, self._update) # pause 250ms before the next request
 
     # add _signOfLife 'timer' to get feedback in log every 5minutes
     gobject.timeout_add(self._getSignOfLifeInterval()*60*1000, self._signOfLife)
@@ -155,7 +155,9 @@ class DbusGoeChargerService:
 
   def _getGoeChargerData(self):
     URL = self._getGoeChargerStatusUrl()
+    #logging.info("URL %s" % URL)
     request_data = requests.get(url = URL)
+    #logging.info("request_data %s" % request_data.text)
 
     # check for response
     if not request_data:
@@ -172,7 +174,7 @@ class DbusGoeChargerService:
 
 
   def _signOfLife(self):
-    logging.info("--- Start: sign of life ---")
+    logging.info("--- Start: sign of life ChargerNo {0} {1} ---".forma(self.goechargernum, self.config['ONPREMISE']['Name{0}'.format(self.goechargernum)]))
     logging.info("Last _update() call: %s" % (self._lastUpdate))
     logging.info("Last '/Ac/Power': %s" % (self._dbusservice['/Ac/Power']))
     logging.info("--- End: sign of life ---")
