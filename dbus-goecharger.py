@@ -1,7 +1,7 @@
 #!/usr/bin/env python
  
 # import normal packages
-import platform 
+import platform
 import logging
 import sys
 import os
@@ -163,18 +163,20 @@ class DbusGoeChargerService:
     if not request_data:
         raise ConnectionError("No response from go-eCharger - %s" % (URL))
 
-    json_data = request_data.json()
+    try:
+        json_data = request_data.json()
+    except Exception as e:
+        logging.error('Error parsing Json from charger {0} {1}'.format(self.goechargernum, self.config['ONPREMISE']['Name{0}'.format(self.goechargernum)]))
+        json_data = ""
 
     # check for Json
     if not json_data:
         raise ValueError("Converting response to JSON failed")
 
-
     return json_data
 
-
   def _signOfLife(self):
-    logging.info("--- Start: sign of life ChargerNo {0} {1} ---".forma(self.goechargernum, self.config['ONPREMISE']['Name{0}'.format(self.goechargernum)]))
+    logging.info("--- Start: sign of life ChargerNo {0} {1} ---".format(self.goechargernum, self.config['ONPREMISE']['Name{0}'.format(self.goechargernum)]))
     logging.info("Last _update() call: %s" % (self._lastUpdate))
     logging.info("Last '/Ac/Power': %s" % (self._dbusservice['/Ac/Power']))
     logging.info("--- End: sign of life ---")
@@ -234,8 +236,14 @@ class DbusGoeChargerService:
 
        #update lastupdate vars
        self._lastUpdate = time.time()
+    except ValueError as e:
+        logging.error('Value Error gefangen in _update: %s', e, exc_info=e)
+    except NewConnectionError as e:
+        logging.error('NewConnectionError gefangen in _update: %s', e, exc_info=e)
+    except ConnectionError as e:
+        logging.error('ConnectionError gefangen in _update: %s', e, exc_info=e)
     except Exception as e:
-       logging.critical('Error at %s', '_update', exc_info=e)
+        logging.critical('Error gefangen in _update: %s', e, exc_info=e)
 
     # return true, otherwise add_timeout will be removed from GObject - see docs http://library.isr.ist.utl.pt/docs/pygtk2reference/gobject-functions.html#function-gobject--timeout-add
     return True
